@@ -12,8 +12,8 @@ class AgentConfig:
     DEFAULT_MODELS = {
         "openai": "openai:gpt-4o",
         "anthropic": "anthropic:claude-3-5-sonnet-20241022",
-        "google": "google:gemini-2.0-flash",
-        "default": "google:gemini-2.0-flash"  # Default fallback
+        "google": "google:gemini-1.5-flash",
+        "default": "mock"  # Default fallback to mock for testing
     }
     
     # Current active model

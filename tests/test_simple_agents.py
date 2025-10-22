@@ -15,7 +15,7 @@ from src.agents.simple_agents import (
 class TestCodeAnalysisAgent:
     """Test cases for code analysis agent."""
     
-    @patch('src.agents.simple_agents.client')
+    @patch('src.agents.code_analysis_agent.client')
     def test_code_analysis_agent_success(self, mock_client):
         """Test successful code analysis."""
         # Mock the client response
@@ -32,7 +32,7 @@ class TestCodeAnalysisAgent:
         assert "abc123" in result["input"]["commit_hash"]
         assert result["output"] is not None
     
-    @patch('src.agents.simple_agents.client')
+    @patch('src.agents.code_analysis_agent.client')
     def test_code_analysis_agent_failure(self, mock_client):
         """Test code analysis agent failure handling."""
         # Mock the client to raise an exception
@@ -50,7 +50,7 @@ class TestCodeAnalysisAgent:
 class TestRequirementAnalysisAgent:
     """Test cases for requirement analysis agent."""
     
-    @patch('src.agents.simple_agents.client')
+    @patch('src.agents.requirement_analysis_agent.client')
     def test_requirement_analysis_agent_success(self, mock_client):
         """Test successful requirement analysis."""
         # Mock the client response
@@ -71,7 +71,7 @@ class TestRequirementAnalysisAgent:
 class TestTestSelectionAgent:
     """Test cases for test selection agent."""
     
-    @patch('src.agents.simple_agents.client')
+    @patch('src.agents.test_selection_agent.client')
     def test_test_selection_agent_success(self, mock_client):
         """Test successful test selection."""
         # Mock the client response
@@ -96,7 +96,7 @@ class TestTestSelectionAgent:
 class TestReflectionAgent:
     """Test cases for reflection agent."""
     
-    @patch('src.agents.simple_agents.client')
+    @patch('src.agents.reflection_agent.client')
     def test_reflection_agent_success(self, mock_client):
         """Test successful reflection."""
         # Mock the client response
@@ -119,7 +119,7 @@ class TestReflectionAgent:
 class TestExecutionAgent:
     """Test cases for execution agent."""
     
-    @patch('src.agents.simple_agents.client')
+    @patch('src.agents.execution_agent.client')
     def test_execution_agent_success(self, mock_client):
         """Test successful execution command generation."""
         # Mock the client response

@@ -19,8 +19,72 @@ The system uses a collaborative coordination pattern with the following agents:
 - **Requirement Analysis Agent**: Fetches and analyzes requirement changes from Jira
 - **Test Selection Agent**: Intelligently selects test cases based on analysis results
 - **Reflection Agent**: Optimizes selections using reflection design patterns
-- **Evaluation Agent**: Evaluates selection accuracy and provides feedback
 - **Execution Agent**: Generates CI/CD execution commands
+
+### Agent Collaboration Flow
+
+```mermaid
+graph TD
+    A[Code Analysis Agent] --> C[Test Selection Agent]
+    B[Requirement Analysis Agent] --> C
+    C --> D[Reflection Agent]
+    D --> E[Execution Agent]
+    
+    A -.->|Git Changes| A
+    B -.->|Jira API| B
+    C -.->|AI Selection| C
+    D -.->|Optimization| D
+    E -.->|CI/CD Commands| E
+```
+
+### Agent Responsibilities
+
+| Agent | Input | Output | Key Features |
+|-------|-------|--------|--------------|
+| **Code Analysis** | Git commit hash | File changes, impact scope | Risk assessment, module analysis |
+| **Requirement Analysis** | Time range, project key | Requirement changes, business impact | Priority assessment, domain mapping |
+| **Test Selection** | Code + requirement analysis | Selected test cases | Intelligent filtering, time estimation |
+| **Reflection** | Test selection results | Optimized selection | Gap analysis, improvement suggestions |
+| **Execution** | Optimized selection | CI/CD commands | Platform-specific commands, parallel execution |
+
+### CI/CD Integration
+
+```mermaid
+graph LR
+    subgraph "Input Environment Variables"
+        A1[GIT_REPO_URL<br/>GIT_BRANCH<br/>GIT_COMMIT_HASH]
+        A2[JIRA_URL<br/>JIRA_PROJECT_KEY<br/>JIRA_API_TOKEN]
+        A3[CI_ENVIRONMENT<br/>Jenkins/GitHub Actions<br/>BUILD_NUMBER]
+        A4[TEST_FRAMEWORKS<br/>PYTEST_CONFIG<br/>PLAYWRIGHT_CONFIG]
+    end
+    
+    subgraph "Smarter Case System"
+        B[Agent Workflow<br/>Analysis → Selection → Execution]
+    end
+    
+    subgraph "Output Commands"
+        C1[pytest commands<br/>API test execution]
+        C2[playwright commands<br/>UI test execution]
+        C3[CI/CD pipeline<br/>Parallel execution]
+    end
+    
+    A1 --> B
+    A2 --> B
+    A3 --> B
+    A4 --> B
+    B --> C1
+    B --> C2
+    B --> C3
+```
+
+### Required Environment Variables
+
+| Category | Variables | Description |
+|----------|-----------|-------------|
+| **Git** | `GIT_REPO_URL`, `GIT_BRANCH`, `GIT_COMMIT_HASH` | Repository information |
+| **Jira** | `JIRA_URL`, `JIRA_PROJECT_KEY`, `JIRA_API_TOKEN` | Requirement tracking |
+| **CI/CD** | `CI_ENVIRONMENT`, `BUILD_NUMBER`, `WORKSPACE` | Pipeline context |
+| **Testing** | `PYTEST_CONFIG`, `PLAYWRIGHT_CONFIG` | Test framework settings |
 
 ## 📋 Prerequisites
 
@@ -73,6 +137,27 @@ nano .env
 mkdir -p data/test_cases data/historical data/models data/cache logs
 ```
 
+### 5. Project Structure
+
+```
+smarter_case/
+├── src/
+│   ├── agents/                 # Agent implementations
+│   │   ├── code_analysis_agent.py
+│   │   ├── requirement_analysis_agent.py
+│   │   ├── test_selection_agent.py
+│   │   ├── reflection_agent.py
+│   │   ├── execution_agent.py
+│   │   └── simple_agents.py    # Unified import interface
+│   ├── coordination/           # Workflow orchestration
+│   ├── config/                # Configuration management
+│   ├── models/                # Data models
+│   └── tools/                 # Utility tools
+├── tests/                     # Test suites
+├── examples/                  # Usage examples
+└── config/                    # Configuration files
+```
+
 ## 🚀 Usage
 
 ### Command Line Interface
@@ -86,26 +171,38 @@ python -m src.main --config config/production.yaml
 
 # Run in CI/CD mode
 python -m src.main --ci-cd --pipeline github-actions
+
+# GitHub Actions example
+export GIT_REPO_URL="https://github.com/user/repo.git"
+export JIRA_URL="https://company.atlassian.net"
+export CI_ENVIRONMENT="github-actions"
+python -m src.main --commit-hash $GITHUB_SHA
 ```
 
 ### Programmatic Usage
 
 ```python
+# Option 1: Use workflow orchestrator (recommended)
 from src.coordination.workflow_orchestrator import WorkflowOrchestrator
 
-# Initialize orchestrator
 orchestrator = WorkflowOrchestrator()
-
-# Execute workflow
 result = await orchestrator.execute_workflow({
     'commit_hash': 'abc123',
     'branch': 'main',
     'time_range': '24h'
 })
 
-# Get selected test cases
-selected_cases = result['test_cases']
-execution_commands = result['execution_commands']
+# Option 2: Use individual agents
+from src.agents.simple_agents import (
+    code_analysis_agent,
+    requirement_analysis_agent,
+    test_selection_agent
+)
+
+# Run individual agents
+code_result = code_analysis_agent('abc123', 'main')
+req_result = requirement_analysis_agent('24h', 'PROJ')
+test_result = test_selection_agent(code_result, req_result)
 ```
 
 ## 🔧 Configuration
