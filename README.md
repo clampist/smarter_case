@@ -24,28 +24,45 @@ The system uses a collaborative coordination pattern with the following agents:
 ### Agent Collaboration Flow
 
 ```mermaid
-graph TD
-    A[Code Analysis Agent] --> C[Test Selection Agent]
-    B[Requirement Analysis Agent] --> C
-    C --> D[Reflection Agent]
-    D --> E[Execution Agent]
+graph LR
+    subgraph "Stage 1: Parallel Data Collection"
+        A[Code Analysis Agent<br/>🔍 Git Analysis<br/>📊 Code Parsing]
+        B[Requirement Analysis Agent<br/>🔗 Jira Integration<br/>📋 Requirement Parsing]
+    end
+    
+    subgraph "Stage 2: Intelligent Decision Making"
+        C[Test Selection Agent<br/>🤖 Receive Parallel Analysis<br/>🧠 LLM Intelligent Decision<br/>📝 Output Preliminary Test Cases]
+    end
+    
+    subgraph "Stage 3: Reflection Optimization"
+        D[Reflection Agent<br/>🔍 Self-Criticism & Optimization<br/>📈 External Feedback<br/>🔄 Iterative Improvement]
+    end
+    
+    subgraph "Stage 4: Execution Preparation"
+        E[Execution Agent<br/>⚡ Generate CI/CD Commands<br/>🚀 Output Execution Instructions]
+    end
+    
+    A --> C
+    B --> C
+    C --> D
+    D --> E
     
     A -.->|Git Changes| A
     B -.->|Jira API| B
-    C -.->|AI Selection| C
-    D -.->|Optimization| D
+    C -.->|AI Selection Feedback| C
+    D -.->|Optimization Loop| D
     E -.->|CI/CD Commands| E
 ```
 
 ### Agent Responsibilities
 
-| Agent | Input | Output | Key Features |
-|-------|-------|--------|--------------|
-| **Code Analysis** | Git commit hash | File changes, impact scope | Risk assessment, module analysis |
-| **Requirement Analysis** | Time range, project key | Requirement changes, business impact | Priority assessment, domain mapping |
-| **Test Selection** | Code + requirement analysis | Selected test cases | Intelligent filtering, time estimation |
-| **Reflection** | Test selection results | Optimized selection | Gap analysis, improvement suggestions |
-| **Execution** | Optimized selection | CI/CD commands | Platform-specific commands, parallel execution |
+| Stage | Agent | Input | Output | Key Features |
+|-------|-------|-------|--------|--------------|
+| **Stage 1** | **Code Analysis** | Git commit hash | Code change analysis, impact scope | 🔍 Git Analysis, 📊 Code Parsing, ⚠️ Risk Assessment |
+| **Stage 1** | **Requirement Analysis** | Time range, project key | Requirement changes, business impact | 🔗 Jira Integration, 📋 Requirement Parsing, 🎯 Priority Assessment |
+| **Stage 2** | **Test Selection** | Parallel analysis results | Preliminary test case selection | 🤖 Receive Analysis, 🧠 LLM Decision Making, 📝 Test Case Filtering |
+| **Stage 3** | **Reflection** | Test selection results | Optimized selection plan | 🔍 Self-Criticism, 📈 External Feedback, 🔄 Iterative Improvement |
+| **Stage 4** | **Execution** | Optimized selection plan | CI/CD execution commands | ⚡ Generate Commands, 🚀 Platform Adaptation, 🔄 Parallel Execution |
 
 ### CI/CD Integration
 
