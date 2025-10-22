@@ -25,22 +25,22 @@ The system uses a collaborative coordination pattern with the following agents:
 
 ```mermaid
 graph TD
-    subgraph S1["Stage 1: Parallel Data Collection"]
-        direction TB
-        A[Code Analysis Agent<br/>🔍 Git Analysis<br/>📊 Code Parsing]
-        B[Requirement Analysis Agent<br/>🔗 Jira Integration<br/>📋 Requirement Parsing]
-    end
-    
-    subgraph S2["Stage 2: Intelligent Decision Making"]
-        C[Test Selection Agent<br/>🤖 Receive Parallel Analysis<br/>🧠 LLM Intelligent Decision<br/>📝 Output Preliminary Test Cases]
+    subgraph S4["Stage 4: Execution Preparation"]
+        E[Execution Agent<br/>⚡ Generate CI/CD Commands<br/>🚀 Output Execution Instructions]
     end
     
     subgraph S3["Stage 3: Reflection Optimization"]
         D[Reflection Agent<br/>🔍 Self-Criticism & Optimization<br/>📈 External Feedback<br/>🔄 Iterative Improvement]
     end
     
-    subgraph S4["Stage 4: Execution Preparation"]
-        E[Execution Agent<br/>⚡ Generate CI/CD Commands<br/>🚀 Output Execution Instructions]
+    subgraph S2["Stage 2: Intelligent Decision Making"]
+        C[Test Selection Agent<br/>🤖 Receive Parallel Analysis<br/>🧠 LLM Intelligent Decision<br/>📝 Output Preliminary Test Cases]
+    end
+    
+    subgraph S1["Stage 1: Parallel Data Collection"]
+        direction TB
+        A[Code Analysis Agent<br/>🔍 Git Analysis<br/>📊 Code Parsing]
+        B[Requirement Analysis Agent<br/>🔗 Jira Integration<br/>📋 Requirement Parsing]
     end
     
     A --> C
