@@ -273,18 +273,43 @@ def main():
     else:
         print("\n⚠️  Some tests failed. Please check the output above.")
         
-        # Check if it's a DNS/network issue
-        if not simple_test_ok and "DNS resolution failed" in str(simple_test_ok):
-            print("\n🌐 Network/DNS Issue Detected")
-            print("=" * 60)
-            print("The Vertex AI endpoint cannot be reached due to DNS resolution failure.")
-            print("This could be caused by:")
-            print("  - Network firewall or proxy settings")
-            print("  - VPN or corporate network restrictions")
-            print("  - DNS configuration issues")
-            print("\n💡 Alternative: Use Google Gemini API (REST) instead")
-            print("   Run: python examples/test_google_gemini.py")
-            print("   This uses direct REST API calls without Vertex AI SDK")
+        # Check for common issues
+        if not simple_test_ok:
+            error_msg = str(simple_test_ok) if simple_test_ok else ""
+            
+            if "DNS resolution failed" in error_msg:
+                print("\n🌐 Network/DNS Issue Detected")
+                print("=" * 60)
+                print("The Vertex AI endpoint cannot be reached due to DNS resolution failure.")
+                print("This could be caused by:")
+                print("  - Network firewall or proxy settings")
+                print("  - VPN or corporate network restrictions")
+                print("  - DNS configuration issues")
+                print("\n💡 Alternative: Use Google Gemini API (REST) instead")
+                print("   Run: python examples/test_google_gemini.py")
+                print("   This uses direct REST API calls without Vertex AI SDK")
+                
+            elif "SERVICE_DISABLED" in error_msg or "Vertex AI API has not been used" in error_msg:
+                print("\n🔧 Vertex AI API Not Enabled")
+                print("=" * 60)
+                print("The Vertex AI API is not enabled in your Google Cloud project.")
+                print("\n📝 To fix this:")
+                print("1. Visit the Google Cloud Console:")
+                print("   https://console.developers.google.com/apis/api/aiplatform.googleapis.com/overview")
+                print(f"   Make sure you're in project: {os.getenv('GOOGLE_PROJECT_ID')}")
+                print("2. Click 'Enable API'")
+                print("3. Wait a few minutes for the changes to propagate")
+                print("4. Run this test again")
+                print("\n💡 Alternative: Use Google Gemini API (REST) instead")
+                print("   Run: python examples/test_google_gemini.py")
+                print("   This uses direct REST API calls without requiring Vertex AI setup")
+                
+            else:
+                print("\n⚠️  Unknown Error")
+                print("=" * 60)
+                print("Please check the error details above.")
+                print("\n💡 Alternative: Use Google Gemini API (REST) instead")
+                print("   Run: python examples/test_google_gemini.py")
         
         if not env_ok:
             print_setup_instructions()
