@@ -121,7 +121,7 @@ def test_vertex_ai_simple():
         print(f"   Error type: {type(e).__name__}")
         import traceback
         print(f"\n   Traceback:\n{traceback.format_exc()}")
-        return False
+        return str(e)  # Return error message instead of False
 
 
 def test_vertex_ai_with_system_prompt():
@@ -275,7 +275,14 @@ def main():
         
         # Check for common issues
         if not simple_test_ok:
-            error_msg = str(simple_test_ok) if simple_test_ok else ""
+            # Get error message from the test result
+            error_msg = ""
+            if hasattr(simple_test_ok, '__str__'):
+                error_msg = str(simple_test_ok)
+            elif isinstance(simple_test_ok, str):
+                error_msg = simple_test_ok
+            else:
+                error_msg = "Unknown error"
             
             if "DNS resolution failed" in error_msg:
                 print("\n🌐 Network/DNS Issue Detected")
@@ -303,6 +310,24 @@ def main():
                 print("\n💡 Alternative: Use Google Gemini API (REST) instead")
                 print("   Run: python examples/test_google_gemini.py")
                 print("   This uses direct REST API calls without requiring Vertex AI setup")
+                
+            elif "BILLING_DISABLED" in error_msg or "billing to be enabled" in error_msg:
+                print("\n💳 Billing Not Enabled")
+                print("=" * 60)
+                print("Vertex AI requires billing to be enabled on your Google Cloud project.")
+                print("\n📝 To fix this:")
+                print("1. Visit the Google Cloud Billing Console:")
+                print("   https://console.developers.google.com/billing/enable")
+                print(f"   Make sure you're in project: {os.getenv('GOOGLE_PROJECT_ID')}")
+                print("2. Enable billing for your project")
+                print("3. Add a payment method (credit card)")
+                print("4. Wait a few minutes for billing to be activated")
+                print("5. Run this test again")
+                print("\n⚠️  Note: Vertex AI charges per API call")
+                print("   Check pricing: https://cloud.google.com/vertex-ai/pricing")
+                print("\n💡 Alternative: Use Google Gemini API (REST) instead")
+                print("   Run: python examples/test_google_gemini.py")
+                print("   This uses direct REST API calls with free tier available")
                 
             else:
                 print("\n⚠️  Unknown Error")
