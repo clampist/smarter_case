@@ -97,7 +97,7 @@ def test_vertex_ai_simple():
         
         client = ai.Client()
         
-        model = "google:gemini-1.5-flash"
+        model = "google:gemini-2.0-flash-exp"
         
         messages = [
             {"role": "system", "content": "You are a helpful assistant. Respond concisely."},
@@ -134,7 +134,7 @@ def test_vertex_ai_with_system_prompt():
         
         client = ai.Client()
         
-        model = "google:gemini-1.5-flash"
+        model = "google:gemini-2.0-flash-exp"
         
         messages = [
             {"role": "system", "content": "Respond in Pirate English."},
@@ -165,8 +165,7 @@ def test_vertex_ai_models():
     print("=" * 60)
     
     models = [
-        "google:gemini-1.5-flash",
-        "google:gemini-1.5-pro",
+        "google:gemini-2.0-flash-exp",
     ]
     
     results = {}
@@ -268,8 +267,8 @@ def main():
     if all([env_ok, vertexai_ok, aisuite_ok, simple_test_ok, system_prompt_test_ok, models_test_ok]):
         print("\n🎉 All tests passed! Google Vertex AI is ready to use with aisuite.")
         print("\n💡 You can now use Vertex AI in your agents:")
-        print("   Set ACTIVE_MODEL=google:gemini-1.5-flash in .env")
-        print("   Or use model='google:gemini-1.5-pro' in your code")
+        print("   Set ACTIVE_MODEL=google:gemini-2.0-flash-exp in .env")
+        print("   Or use model='google:gemini-2.0-flash-exp' in your code")
         return 0
     else:
         print("\n⚠️  Some tests failed. Please check the output above.")

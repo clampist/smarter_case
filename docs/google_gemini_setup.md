@@ -130,7 +130,7 @@ messages = [
 ]
 
 response = client.chat.completions.create(
-    model="google:gemini-1.5-flash",
+    model="google:gemini-2.0-flash-exp",
     messages=messages,
 )
 
@@ -226,11 +226,8 @@ You can use either method depending on your needs. The project defaults to mock 
 To use Google Gemini as the default model, add to `.env`:
 
 ```bash
-# For REST API
+# For REST API or Vertex AI
 ACTIVE_MODEL=google:gemini-2.0-flash-exp
-
-# For Vertex AI
-ACTIVE_MODEL=google:gemini-1.5-flash
 ```
 
 Or specify the model in your code:
@@ -240,9 +237,7 @@ from src.agents.simple_agents import code_analysis_agent
 
 result = code_analysis_agent(
     commit_hash="abc123",
-    model="google:gemini-2.0-flash-exp"  # REST API
-    # or
-    # model="google:gemini-1.5-flash"  # Vertex AI
+    model="google:gemini-2.0-flash-exp"  # REST API or Vertex AI
 )
 ```
 
