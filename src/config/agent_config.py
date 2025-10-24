@@ -12,7 +12,7 @@ class AgentConfig:
     DEFAULT_MODELS = {
         "openai": "openai:gpt-4o",
         "anthropic": "anthropic:claude-3-5-sonnet-20241022",
-        "google": "google:gemini-2.0-flash-exp",
+        "google": "google_rest:gemini-2.5-flash",  # Using custom aisuite with REST API (latest free model)
         "default": "mock"  # Default fallback to mock for testing
     }
     

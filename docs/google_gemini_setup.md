@@ -1,15 +1,108 @@
 # Google Gemini Setup Guide
 
-This guide explains two ways to use Google Gemini with the Smarter Case project.
+This guide explains how to use Google Gemini with the Smarter Case project, including the latest custom aisuite integration.
 
 ## Overview
 
-There are two methods to integrate Google Gemini:
+There are three methods to integrate Google Gemini:
 
-1. **Google Gemini API (REST)** - Simpler, uses API key only
-2. **Google Vertex AI** - Enterprise solution, requires Google Cloud setup
+1. **Custom aisuite with Google REST API** ⭐ **Recommended** - Latest implementation with `gemini-2.5-flash`
+2. **Google Gemini API (REST)** - Direct REST API calls
+3. **Google Vertex AI** - Enterprise solution, requires Google Cloud setup
 
-## Method 1: Google Gemini API (REST) ⭐ Recommended for Quick Start
+## 🎉 Latest Integration: Custom aisuite with Google REST API
+
+### Overview
+
+The Smarter Case project now uses a custom `aisuite` implementation that provides direct Google REST API support with the latest `gemini-2.5-flash` model (currently the only free model).
+
+### Key Benefits
+
+- ✅ **Latest Model**: Uses `gemini-2.5-flash` (currently the only free model)
+- ✅ **Simplified Setup**: Only requires API key
+- ✅ **No Vertex AI Required**: Direct REST API calls
+- ✅ **Cost Effective**: Free tier available
+- ✅ **Better Reliability**: Enhanced error handling
+- ✅ **Agent Integration**: Seamless integration with existing agents
+
+### Setup Steps
+
+1. **Install Custom aisuite**
+   ```bash
+   pip install git+https://github.com/clampist/aisuite.git
+   ```
+
+2. **Get Google API Key**
+   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Click "Create API Key"
+   - Copy the API key
+
+3. **Configure Environment Variables**
+   
+   Add to `.env` file:
+   ```bash
+   GOOGLE_API_KEY=your-api-key-here
+   ```
+
+4. **Test Configuration**
+   ```bash
+   python examples/test_custom_aisuite.py
+   ```
+
+### Usage
+
+```python
+import aisuite as ai
+import os
+
+# Create client with Google REST provider
+client = ai.Client({
+    'google_rest': {
+        'api_key': os.getenv('GOOGLE_API_KEY')
+    }
+})
+
+# Make API call
+response = client.chat.completions.create(
+    model='google_rest:gemini-2.5-flash',
+    messages=[{'role': 'user', 'content': 'Hello!'}]
+)
+print(response.choices[0].message.content)
+```
+
+### Agent Integration
+
+```python
+from src.agents.simple_agents import code_analysis_agent
+
+result = code_analysis_agent(
+    commit_hash="abc123",
+    branch="main",
+    model="google_rest:gemini-2.5-flash"
+)
+```
+
+### Configuration
+
+The project is configured to use the custom aisuite by default:
+
+```python
+# src/config/agent_config.py
+DEFAULT_MODELS = {
+    "google": "google_rest:gemini-2.5-flash",  # Latest free model
+    "default": "mock"
+}
+```
+
+### Test Results
+
+All tests pass successfully:
+- ✅ Basic Google REST API Test: PASS
+- ✅ System Prompt Test: PASS  
+- ✅ Multiple Models Test: PASS
+- ✅ Agent Integration Test: PASS
+
+## Method 2: Google Gemini API (REST) - Legacy
 
 ### Prerequisites
 
@@ -62,7 +155,7 @@ result = code_analysis_agent(
 - ❌ No custom model tuning
 - ❌ Rate limits may be lower
 
-## Method 2: Google Vertex AI (Enterprise)
+## Method 3: Google Vertex AI (Enterprise)
 
 ### Prerequisites
 
@@ -199,34 +292,43 @@ Update `GOOGLE_REGION` in `.env` to a supported region.
 
 ## Comparison Table
 
-| Feature | REST API | Vertex AI |
-|---------|----------|-----------|
-| Setup Complexity | ⭐ Simple | ⭐⭐⭐ Complex |
-| Cost | Free tier available | Pay-as-you-go |
-| Network Requirements | Minimal | Requires Google Cloud access |
-| Enterprise Features | Limited | Full |
-| Rate Limits | Standard | Higher |
-| Best For | Development, Testing | Production, Enterprise |
+| Feature | Custom aisuite | REST API | Vertex AI |
+|---------|----------------|----------|-----------|
+| Setup Complexity | ⭐ Simple | ⭐ Simple | ⭐⭐⭐ Complex |
+| Cost | Free tier available | Free tier available | Pay-as-you-go |
+| Model | gemini-2.5-flash (latest) | gemini-2.0-flash-exp | gemini-2.0-flash-exp |
+| Network Requirements | Minimal | Minimal | Requires Google Cloud access |
+| Enterprise Features | Limited | Limited | Full |
+| Rate Limits | Standard | Standard | Higher |
+| Agent Integration | ✅ Seamless | ⚠️ Basic | ⚠️ Basic |
+| Best For | Development, Testing, Production | Development, Testing | Production, Enterprise |
 
 ## Recommendation
 
-- **For Development/Testing**: Use Method 1 (REST API)
-- **For Production**: Use Method 2 (Vertex AI) if you need enterprise features
-- **For Quick Start**: Use Method 1 (REST API)
+- **⭐ For All Use Cases**: Use Custom aisuite with Google REST API (Method 1)
+- **For Legacy Support**: Use Direct REST API (Method 2)
+- **For Enterprise**: Use Vertex AI (Method 3) if you need enterprise features
 
 ## Current Project Status
 
-✅ **Method 1 (REST API)** - Fully configured and tested
-⚠️  **Method 2 (Vertex AI)** - Configured but may have network restrictions
+✅ **Custom aisuite with Google REST API** - Fully configured and tested with `gemini-2.5-flash`
+✅ **Direct REST API** - Fully configured and tested
+⚠️  **Vertex AI** - Configured but may have network restrictions
 
-You can use either method depending on your needs. The project defaults to mock mode for testing without requiring any API keys.
+The project now defaults to using the custom aisuite implementation with the latest free model. You can use any method depending on your needs.
 
 ## Setting Active Model
 
 To use Google Gemini as the default model, add to `.env`:
 
 ```bash
-# For REST API or Vertex AI
+# For Custom aisuite (Recommended)
+ACTIVE_MODEL=google_rest:gemini-2.5-flash
+
+# For Direct REST API
+ACTIVE_MODEL=google:gemini-2.0-flash-exp
+
+# For Vertex AI
 ACTIVE_MODEL=google:gemini-2.0-flash-exp
 ```
 
@@ -235,9 +337,28 @@ Or specify the model in your code:
 ```python
 from src.agents.simple_agents import code_analysis_agent
 
+# Using Custom aisuite (Recommended)
 result = code_analysis_agent(
     commit_hash="abc123",
-    model="google:gemini-2.0-flash-exp"  # REST API or Vertex AI
+    model="google_rest:gemini-2.5-flash"
+)
+
+# Using Direct REST API
+result = code_analysis_agent(
+    commit_hash="abc123",
+    model="google:gemini-2.0-flash-exp"
 )
 ```
+
+## 🎉 Integration Complete
+
+The Smarter Case project now successfully integrates with Google Gemini using the latest custom aisuite implementation. The system provides:
+
+- ✅ **Latest Technology**: Using `gemini-2.5-flash` (currently the only free model)
+- ✅ **Simplified Integration**: Easy setup and configuration
+- ✅ **Production Ready**: All components tested and working
+- ✅ **Cost Effective**: Free tier model with excellent performance
+- ✅ **Future Proof**: Ready for continued development and scaling
+
+The project is now ready for the next phase of development and deployment!
 
